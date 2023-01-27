@@ -1,6 +1,6 @@
 const {getUsers, users} = require('./getUsers');
 
-function socket(io) {
+exports.socket = (io) => {
     //Socket connection
     console.log("in socket func------")
     io.on('connection', (socket) => {
@@ -9,25 +9,25 @@ function socket(io) {
             console.log("in joined users------")
             //Storing users connected in a room in memory
             var user = {};
-            user[socket.id] = data.username;
-            if (users[data.roomname]) {
-                users[data.roomname].push(user);
+            user[socket.id] = data.userName;
+            if (users[data.roomName]) {
+                users[data.roomName].push(user);
             } else {
-                users[data.roomname] = [user];
+                users[data.roomName] = [user];
             }
 
             //Joining the Socket Room
-            socket.join(data.roomname);
+            socket.join(data.roomName);
 
-            //Emitting New Username to Clients
-            io.to(data.roomname).emit('joined-user', {username: data.username});
+            //Emitting New userName to Clients
+            io.to(data.roomName).emit('joined-user', {userName: data.userName});
 
             //Send online users array
-            io.to(data.roomname).emit('online-users', getUsers(users[data.roomname]))
+            io.to(data.roomName).emit('online-users', getUsers(users[data.roomName]))
         })
 
         socket.on('chat', (data) =>{
-            io.to(data.roomname).emit('chat', {username: data.username, message: data.message});
+            io.to(data.roomName).emit('chat', {userName: data.userName, message: data.message});
         })
 
         //Remove user from memory when they disconnect
@@ -35,17 +35,16 @@ function socket(io) {
             console.log("in disconnecting------")
             var rooms = Object.keys(socket.rooms);
             var socketId = rooms[0];
-            var roomname = rooms[1];
-            users[roomname].forEach((user, index) => {
+            var roomName = rooms[1];
+            users[roomName].forEach((user, index) => {
                 if(user[socketId]){
-                    users[roomname].splice(index, 1)
+                    users[roomName].splice(index, 1)
                 }
             });
 
             //Send online users array
-            io.to(roomname).emit('online-users', getUsers(users[roomname]))
+            io.to(roomName).emit('online-users', getUsers(users[roomName]))
         })
     })
 
 }
-module.exports = socket;

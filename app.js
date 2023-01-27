@@ -15,7 +15,6 @@ app.use('/uploads', express.static("uploads"));
 const users = require("./routes/user.routes");
 const rooms = require("./routes/room.routes");
 const {getUsers} = require("./utils/getUsers");
-const constants = require("constants");
 
 app.get("/", (req, res) =>{
     res.render('index')
@@ -27,39 +26,10 @@ app.use("/room", rooms);
 
 const server = app.listen(process.env.PORT || 3000, () => console.log('Server started'));
 const io = require("socket.io")(server);
-// require('./utils/socket');
+require('./utils/socket').socket(io);
 
 // var http = require('http').Server(app)
 // const io = socket(http);
-io.on('connection', (socket) =>{
-    console.log('some user is connected....')
-    socket.on('joined-user', (data) => {
-        console.log(data)
-        console.log("in joined users------")
-        //Storing users connected in a room in memory
-        var user = {};
-        user[socket.id] = data.userName;
-        console.log(user[socket.id])
-        console.log(user)
-        if (users[data.roomName]) {
-            users[data.roomName].push(user);
-        } else {
-            users[data.roomName] = [user];
-        }
-        //Joining the Socket Room
-        console.log(socket.join(data.roomName));
-
-        //Emitting New Username to Clients
-        console.log(io.to(data.roomName).emit('joined-user', {username: data.userName}));
-
-
-
-        //Send online users array
-        io.to(data.roomName).emit('online-users', getUsers(users[data.roomName]))
-    })
-
-
-})
 // const io = socket(server);
 //const socketIO = require('./utils/socket')(io);
 // console.log(socketIO)
