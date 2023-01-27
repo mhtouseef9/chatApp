@@ -25,7 +25,7 @@ app.use("/room", rooms);
 // app.set('view engine', 'ejs');
 
 const server = app.listen(process.env.PORT || 3000, () => console.log('Server started'));
-const io = require("socket.io")(server);
+const io = require("socket.io")(server)
 require('./utils/socket').socket(io);
 
 // var http = require('http').Server(app)
@@ -35,5 +35,7 @@ require('./utils/socket').socket(io);
 // console.log(socketIO)
 
 
+
 // importing all config
 // config;
+// exports.server = server;

@@ -1,12 +1,15 @@
 const {getUsers, users} = require('./getUsers');
+// const appJs = require('../app');
+// console.log(appJs.server)
+// const io = require("socket.io")(appJs.server);
 
 exports.socket = (io) => {
     //Socket connection
     console.log("in socket func------")
     io.on('connection', (socket) => {
         console.log("in connection------")
-        socket.on('joined-user', (data) => {
-            console.log("in joined users------")
+        socket.on('join', (data) => {
+            console.log("in join------")
             //Storing users connected in a room in memory
             var user = {};
             user[socket.id] = data.userName;
@@ -20,7 +23,7 @@ exports.socket = (io) => {
             socket.join(data.roomName);
 
             //Emitting New userName to Clients
-            io.to(data.roomName).emit('joined-user', {userName: data.userName});
+            io.to(data.roomName).emit('join', {userName: data.userName});
 
             //Send online users array
             io.to(data.roomName).emit('online-users', getUsers(users[data.roomName]))
