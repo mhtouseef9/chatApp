@@ -26,7 +26,8 @@ app.use("/room", rooms);
 
 const server = app.listen(process.env.PORT || 3000, () => console.log('Server started'));
 const io = require("socket.io")(server)
-require('./utils/socket').socket(io);
+require('./utils/chat-socket').socket(io);
+require('./utils/simple-broadcasting-socket').socket(io);
 
 // var http = require('http').Server(app)
 // const io = socket(http);

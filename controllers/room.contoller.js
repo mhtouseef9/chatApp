@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-require('../utils/socket');
+require('../utils/chat-socket');
 
 exports.createRoom = (req, res) => {
     console.log("in createRoom----")

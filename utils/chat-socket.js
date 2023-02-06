@@ -30,6 +30,7 @@ exports.socket = (io) => {
         })
 
         socket.on('chat', (data) =>{
+            // emitting for any event on a particular topic
             io.to(data.roomName).emit('chat', {userName: data.userName, message: data.message});
         })
 
@@ -39,6 +40,8 @@ exports.socket = (io) => {
             var rooms = Object.keys(socket.rooms);
             var socketId = rooms[0];
             var roomName = rooms[1];
+            console.log(rooms)
+            console.log(users[roomName])
             users[roomName].forEach((user, index) => {
                 if(user[socketId]){
                     users[roomName].splice(index, 1)
